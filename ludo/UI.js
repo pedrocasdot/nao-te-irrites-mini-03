@@ -1,6 +1,18 @@
 import { COORDINATES_MAP, PLAYERS, STEP_LENGTH } from './constants.js';
 
 const diceButtonElement = document.querySelector('#dice-btn');
+var elDiceOne = document.getElementById('dice1');
+var elDiceTwo = document.getElementById('dice2');
+
+const values = {
+    1: 1,
+    2: 5,
+    3: 6,
+    4: 3,
+    5: 4,
+    6: 2
+};
+
 const playerPiecesElements = {
     P1: document.querySelectorAll('[player-id="P1"].player-piece'),
     P2: document.querySelectorAll('[player-id="P2"].player-piece'),
@@ -20,6 +32,7 @@ export class UI {
     static listenPieceClick(callback) {
         document.querySelector('.player-pieces').addEventListener('click', callback)
     }
+
 
     /**
      * 
@@ -85,17 +98,21 @@ export class UI {
         })
     }
 
-    static setDiceValue(value) {
-        document.querySelector('.dice-value').innerText = value;
+    static setDiceValue1(valueDice1) {
+        for (var i = 1; i <= 6; i++) {
+            elDiceOne.classList.remove('show-' + i);
+        }
+
+        elDiceOne.classList.add('show-' + valueDice1);
+        return values[valueDice1];
+    }
+
+
+    static setDiceValue2(valueDice2) {
+        for (var i = 1; i <= 6; i++) {
+            elDiceTwo.classList.remove('show-' + i);
+        }
+        elDiceTwo.classList.add('show-' + valueDice2);
+        return values[valueDice2];
     }
 }
-
-// UI.setPiecePosition('P1', 0, 0);
-// UI.setTurn(0);
-// UI.setTurn(1);
-
-// UI.disableDice();
-// UI.enableDice();
-// UI.highlightPieces('P1', [0]);
-// UI.unhighlightPieces();
-// UI.setDiceValue(5);

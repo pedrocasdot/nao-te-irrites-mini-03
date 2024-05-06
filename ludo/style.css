@@ -8,10 +8,9 @@
 }
 
 .ludo-container .ludo {
-
     height: 450px;
     width: 100%;
-    background-image: url('./ludo-bg.jpg');
+    background-image: url('./Tabuleiro.png');
     background-size: contain;
     position: relative;
 }
@@ -103,8 +102,9 @@
     border-color: #f00606;
 }
 
-*/ .player-base.highlight {
-    animation: border-blink .7s infinite ease-in-out;
+.player-base.highlight {
+    animation: border-blink .5s infinite alternate-reverse;
+
 }
 
 @keyframes border-blink {
@@ -131,7 +131,8 @@
 
 .row {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: space-around;
     margin-top: 15px;
 }
 
