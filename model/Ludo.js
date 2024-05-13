@@ -1,5 +1,5 @@
-import { BASE, LARGO_CASA, CASA, JOGADORES, NAO_PODE_MATAR, INICIO, ESTADO_DADO, DESTINO } from '../ludo/posicoes.js';
-import { UI } from '../ludo/interface.js';
+import { BASE, LARGO_CASA, CASA, JOGADORES, NAO_PODE_MATAR, INICIO, ESTADO_DADO, DESTINO } from '../nanter/posicoes.js';
+import { UI } from '../nanter/interface.js';
 
 export class Ludo {
     currentPositions = {
