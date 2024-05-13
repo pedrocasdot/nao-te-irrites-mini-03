@@ -10,7 +10,7 @@
 .ludo-container .ludo {
     height: 450px;
     width: 100%;
-    background-image: url('./Tabuleiro.png');
+    background-image: url('../images/nti_bg.png');
     background-size: contain;
     position: relative;
 }
@@ -56,11 +56,11 @@
 }
 
 [player-id="P1"].player-piece {
-    background-color: #2eafff;
+    background-color: white;
 }
 
 [player-id="P2"].player-piece {
-    background-color: #00b550;
+    background-color: blue;
 }
 
 [player-id="P3"].player-piece {
@@ -72,8 +72,8 @@
 }
 
 .player-base {
-    width: 40%;
-    height: 40%;
+    width: 37%;
+    height: 37%;
     border: 30px solid;
     position: absolute;
 }
@@ -81,25 +81,25 @@
 .player-bases [player-id="P1"].player-base {
     bottom: 0;
     left: 0;
-    border-color: #1295e7;
+    border-color: #343536;
 }
 
 .player-bases [player-id="P2"].player-base {
     top: 0;
     right: 0;
-    border-color: #049645;
+    border-color: #343536;
 }
 
 .player-bases [player-id="P3"].player-base {
     top: 0;
     left: 0;
-    border-color: #f0ff1a;
+    border-color: #343536;
 }
 
 .player-bases [player-id="P4"].player-base {
     bottom: 0;
     right: 0;
-    border-color: #f00606;
+    border-color: #343536;
 }
 
 .player-base.highlight {
@@ -117,7 +117,21 @@
     padding: 8px 20px;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
     font-size: 16px;
+}
+
+.btn, .btn-reset{
+    width: auto;
+    height: auto;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    background-color: green;
+}
+
+.btn-reset:hover{
+    background-color: #18412a;
 }
 
 .btn:disabled {
@@ -125,10 +139,14 @@
 }
 
 .btn-dice {
-    background-color: #009d60;
+    background-color: #343536;
+    font-weight: bold;
     color: white;
 }
 
+.btn-dice:hover{
+    background-color: black;
+}
 .row {
     display: flex;
     align-items: center;

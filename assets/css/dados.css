@@ -1,5 +1,7 @@
 body {
-    background-image: url('./ilha-luanda.jpg');
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .container {

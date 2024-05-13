@@ -1,5 +1,5 @@
-import { BASE_POSITIONS, HOME_ENTRANCE, HOME_POSITIONS, PLAYERS, SAFE_POSITIONS, START_POSITIONS, STATE, TURNING_POINTS } from './constants.js';
-import { UI } from './UI.js';
+import { BASE, LARGO_CASA, CASA, JOGADORES, NAO_PODE_MATAR, INICIO, ESTADO_DADO, DESTINO } from '../ludo/posicoes.js';
+import { UI } from '../ludo/interface.js';
 
 export class Ludo {
     currentPositions = {
@@ -51,7 +51,7 @@ export class Ludo {
     set state(value) {
         this._state = value;
 
-        if (value === STATE.DICE_NOT_ROLLED) {
+        if (value === ESTADO_DADO.DICE_NOT_ROLLED) {
             UI.enableDice();
             UI.unhighlightPieces();
         } else {
@@ -64,7 +64,6 @@ export class Ludo {
         this.listenResetClick();
         this.listenPieceClick();
         this.resetGame();
-
     }
 
     listenDiceClick() {
@@ -73,7 +72,7 @@ export class Ludo {
 
     onDiceClick() {
 
-        var audio = new Audio('./ludo/dado_rolando.mp3');
+        var audio = new Audio('../assets/audio/dado_rolando.mp3');
 
 
         let x = Math.floor((Math.random() * 6) + 1);
@@ -82,13 +81,13 @@ export class Ludo {
         this.dicetwo = y;
         audio.play();
 
-        this.state = STATE.DICE_ROLLED;
+        this.state = ESTADO_DADO.DICE_ROLLED;
 
         this.checkForEligiblePieces();
     }
 
     checkForEligiblePieces() {
-        const player = PLAYERS[this.turn];
+        const player = JOGADORES[this.turn];
         const eligiblePieces = this.getEligiblePieces(player);
         if (eligiblePieces.length) {
             UI.highlightPieces(player, eligiblePieces);
@@ -107,26 +106,26 @@ export class Ludo {
         } else if (this.turn == 3) {
             this.turn = 0;
         }
-        this.state = STATE.DICE_NOT_ROLLED;
+        this.state = ESTADO_DADO.DICE_NOT_ROLLED;
     }
 
     getEligiblePieces(player) {
         return [0, 1, 2, 3].filter(piece => {
             const currentPosition = this.currentPositions[player][piece];
-            if (currentPosition === HOME_POSITIONS[player]) {
+            if (currentPosition === CASA[player]) {
                 return false;
             }
 
             if (
-                BASE_POSITIONS[player].includes(currentPosition)
+                BASE[player].includes(currentPosition)
                 && this.diceone !== 6
             ) {
                 return false;
             }
 
             if (
-                HOME_ENTRANCE[player].includes(currentPosition)
-                && Math.min(this.diceone, this.dicetwo) > HOME_POSITIONS[player] - currentPosition
+                LARGO_CASA[player].includes(currentPosition)
+                && Math.min(this.diceone, this.dicetwo) > CASA[player] - currentPosition
             ) {
                 return false;
             }
@@ -137,20 +136,20 @@ export class Ludo {
     getEligiblePiecesForBonus(player) {
         return [0, 1, 2, 3].filter(piece => {
             const currentPosition = this.currentPositions[player][piece];
-            if (currentPosition === HOME_POSITIONS[player]) {
+            if (currentPosition === CASA[player]) {
                 return false;
             }
 
             if (
-                BASE_POSITIONS[player].includes(currentPosition)
+                BASE[player].includes(currentPosition)
                 && this.bonus !== 6
             ) {
                 return false;
             }
 
             if (
-                HOME_ENTRANCE[player].includes(currentPosition)
-                && this.bonus > HOME_POSITIONS[player] - currentPosition
+                LARGO_CASA[player].includes(currentPosition)
+                && this.bonus > CASA[player] - currentPosition
             ) {
                 return false;
             }
@@ -163,16 +162,16 @@ export class Ludo {
     }
 
     resetGame() {
-        this.currentPositions = structuredClone(BASE_POSITIONS);
+        this.currentPositions = structuredClone(BASE);
 
-        PLAYERS.forEach(player => {
+        JOGADORES.forEach(player => {
             [0, 1, 2, 3].forEach(piece => {
                 this.setPiecePosition(player, piece, this.currentPositions[player][piece])
             })
         });
 
         this.turn = Math.floor(Math.random() * 4);
-        this.state = STATE.DICE_NOT_ROLLED;
+        this.state = ESTADO_DADO.DICE_NOT_ROLLED;
     }
 
     listenPieceClick() {
@@ -191,7 +190,7 @@ export class Ludo {
 
         const currentPosition = this.currentPositions[player][piece];
 
-        if (BASE_POSITIONS[player].includes(currentPosition) || this.bonus) {
+        if (BASE[player].includes(currentPosition) || this.bonus) {
             this.handlePieceClick(player, piece);
             return;
         }
@@ -227,9 +226,9 @@ export class Ludo {
         console.log(player, piece);
         const currentPosition = this.currentPositions[player][piece];
 
-        if (BASE_POSITIONS[player].includes(currentPosition)) {
-            this.setPiecePosition(player, piece, START_POSITIONS[player]);
-            this.state = STATE.DICE_NOT_ROLLED;
+        if (BASE[player].includes(currentPosition)) {
+            this.setPiecePosition(player, piece, INICIO[player]);
+            this.state = ESTADO_DADO.DICE_NOT_ROLLED;
             return;
         }
 
@@ -259,20 +258,20 @@ export class Ludo {
 
                 const isKill = this.checkForKill(player, piece);
                 if (isKill) {
-                    const player = PLAYERS[this.turn];
+                    const player = JOGADORES[this.turn];
                     const eligiblePieces = this.getEligiblePiecesForBonus(player);
                     if (eligiblePieces.length) {
                         this.bonus = 10
                         UI.highlightPieces(player, eligiblePieces);
                         if (this.diceone === 6) {
-                            this.state = STATE.DICE_NOT_ROLLED;
+                            this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                         }
                         this.bonus = 0;
                         return;
                     }
                 }
                 if (this.diceone === 6) {
-                    this.state = STATE.DICE_NOT_ROLLED;
+                    this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                     return;
                 }
 
@@ -293,8 +292,8 @@ export class Ludo {
                 [0, 1, 2, 3].forEach(piece => {
                     const opponentPosition = this.currentPositions[opponent][piece];
 
-                    if (currentPosition === opponentPosition && !SAFE_POSITIONS.includes(currentPosition)) {
-                        this.setPiecePosition(opponent, piece, BASE_POSITIONS[opponent][piece]);
+                    if (currentPosition === opponentPosition && !NAO_PODE_MATAR.includes(currentPosition)) {
+                        this.setPiecePosition(opponent, piece, BASE[opponent][piece]);
                         kill = true
                     }
                 });
@@ -305,7 +304,7 @@ export class Ludo {
     }
 
     hasPlayerWon(player) {
-        return [0, 1, 2, 3].every(piece => this.currentPositions[player][piece] === HOME_POSITIONS[player])
+        return [0, 1, 2, 3].every(piece => this.currentPositions[player][piece] === CASA[player])
     }
 
     incrementPiecePosition(player, piece) {
@@ -315,10 +314,10 @@ export class Ludo {
     getIncrementedPosition(player, piece) {
         const currentPosition = this.currentPositions[player][piece];
 
-        if (currentPosition === TURNING_POINTS[player]) {
-            return HOME_ENTRANCE[player][0];
+        if (currentPosition === DESTINO[player]) {
+            return LARGO_CASA[player][0];
         }
-        else if (currentPosition === 51) {
+        else if (currentPosition === 79) {
             return 0;
         }
         return currentPosition + 1;

@@ -1,4 +1,4 @@
-import { COORDINATES_MAP, PLAYERS, STEP_LENGTH } from './constants.js';
+import { COORDENADAS, JOGADORES, SALTO } from './posicoes.js';
 
 const diceButtonElement = document.querySelector('#dice-btn');
 var elDiceOne = document.getElementById('dice1');
@@ -46,20 +46,20 @@ export class UI {
             return;
         }
 
-        const [x, y] = COORDINATES_MAP[newPosition];
+        const [x, y] = COORDENADAS[newPosition];
 
         const pieceElement = playerPiecesElements[player][piece];
-        pieceElement.style.top = y * STEP_LENGTH + '%';
-        pieceElement.style.left = x * STEP_LENGTH + '%';
+        pieceElement.style.top = y * SALTO + '%';
+        pieceElement.style.left = x * SALTO + '%';
     }
 
     static setTurn(index) {
-        if (index < 0 || index >= PLAYERS.length) {
+        if (index < 0 || index >= JOGADORES.length) {
             console.error('index out of bound!');
             return;
         }
 
-        const player = PLAYERS[index];
+        const player = JOGADORES[index];
 
         // Display player ID
         document.querySelector('.active-player span').innerText = player;
