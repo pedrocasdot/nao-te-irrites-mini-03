@@ -2,12 +2,12 @@
     box-sizing: border-box;
 }
 
-.ludo-container {
+.nanter-container {
     width: 450px;
     margin: 20px auto;
 }
 
-.ludo-container .ludo {
+.nanter-container .nanter {
     height: 450px;
     width: 100%;
     background-image: url('../images/nti_bg.png');

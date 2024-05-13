@@ -72,7 +72,7 @@ export class Ludo {
 
     onDiceClick() {
 
-        var audio = new Audio('../assets/audio/dado_rolando.mp3');
+        var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
 
 
         let x = Math.floor((Math.random() * 6) + 1);
@@ -198,12 +198,12 @@ export class Ludo {
             showDenyButton: true,
             confirmButtonText: `<span style='color: white; font-weight: bold;'>${this.diceone}</span>`,
             denyButtonText: `<span style='color: white; font-weight: bold;'>${this.dicetwo}</span>`,
-            background: `url('./dados.jpg') no-repeat`,
+            background: `url('../assets/images/dados.jpg') no-repeat`,
             customClass: {
                 title: 'swal-text-white',
                 content: 'swal-text-white',
                 actions: 'swal-text-white',
-                confirmButton: 'swal-button-green',
+                confirmButton: 'swal-button-red',
                 denyButton: 'swal-button-red',
             },
             width: '180px',
