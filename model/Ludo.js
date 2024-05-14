@@ -73,12 +73,13 @@ export class Ludo {
     onDiceClick() {
 
         var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
+        
+        var values = [3, 3, 1, 1, 1,3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
 
-
-        let x = Math.floor((Math.random() * 6) + 1);
-        let y = Math.floor((Math.random() * 6) + 1);
-        this.diceone = x;
-        this.dicetwo = y;
+        let x = Math.floor(Math.random() * 15);
+        let y = Math.floor(Math.random() * 15);
+        this.diceone = values[x];
+        this.dicetwo = values[y];
         audio.play();
 
         this.state = ESTADO_DADO.DICE_ROLLED;
@@ -206,15 +207,11 @@ export class Ludo {
                 confirmButton: 'swal-button-red',
                 denyButton: 'swal-button-red',
             },
-            width: '180px',
-            heightAuto: false
+            width: 'auto',
         }).then((result) => {
             if (result.isConfirmed) {
-
                 this.handlePieceClick(player, piece);
             } else if (result.isDenied) {
-
-                this.diceone = this.dicetwo
                 this.handlePieceClick(player, piece);
             }
         });

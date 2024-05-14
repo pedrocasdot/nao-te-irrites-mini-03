@@ -10,7 +10,7 @@
 .nanter-container .nanter {
     height: 450px;
     width: 100%;
-    background-image: url('../images/nti_bg.png');
+    background-image: url('../images/bg-gif.gif');
     background-size: contain;
     position: relative;
 }
@@ -23,8 +23,8 @@
 .player-piece {
     width: 3%;
     height: 3%;
-    border: 2px solid;
-    border-radius: 10px;
+    border: 1px solid;
+    border-radius: 20px;
     position: absolute;
     transform: translate(50%, 50%);
     transition: all .2s;
@@ -57,10 +57,14 @@
 
 [player-id="P1"].player-piece {
     background-color: white;
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: contain;
 }
 
 [player-id="P2"].player-piece {
     background-color: blue;
+    background-image: url('../images/dados.jpg');
+    background-size: contain;
 }
 
 [player-id="P3"].player-piece {
@@ -82,10 +86,16 @@
     bottom: 0;
     left: 0;
     border-color: #343536;
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .player-bases [player-id="P2"].player-base {
     top: 0;
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
     right: 0;
     border-color: #343536;
 }
@@ -94,12 +104,18 @@
     top: 0;
     left: 0;
     border-color: #343536;
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .player-bases [player-id="P4"].player-base {
     bottom: 0;
     right: 0;
     border-color: #343536;
+    background-image: url('../images/ilha-luanda.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .player-base.highlight {

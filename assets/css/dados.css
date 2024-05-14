@@ -18,6 +18,10 @@ body {
     transform-style: preserve-3d;
     transition: transform 0.5s;
 }
+.swal-button-red{
+    background-color: #d90429 !important;
+}
+
 
 .dot {
     position: absolute;
