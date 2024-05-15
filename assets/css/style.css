@@ -15,15 +15,15 @@
     position: relative;
 }
 
-.player-pieces {
+.pecas {
     height: 100%;
     width: 100%;
 }
 
-.player-piece {
+.peca {
     width: 3%;
     height: 3%;
-    border: 1px solid;
+    border: 1.5px solid;
     border-radius: 20px;
     position: absolute;
     transform: translate(50%, 50%);
@@ -35,10 +35,10 @@
     left: 50%; */
 }
 
-.player-piece.highlight {
+.peca.highlight {
     cursor: pointer;
     border: 2px dashed;
-    animation: spin 1s infinite linear;
+    animation: spin 2s infinite linear;
 }
 
 @keyframes spin {
@@ -47,7 +47,7 @@
     }
 
     50% {
-        transform: translate(50%, 50%) rotate(180deg) scale(1.4);
+        transform: translate(50%, 50%) rotate(180deg) scale(1.8);
     }
 
     100% {
@@ -55,24 +55,32 @@
     }
 }
 
-[player-id="P1"].player-piece {
+[PID="P1"].peca {
     background-color: white;
+    border-color: white;
     background-image: url('../images/ilha-luanda.jpg');
     background-size: contain;
 }
 
-[player-id="P2"].player-piece {
+[PID="P2"].peca {
     background-color: blue;
+    border-color: blue;
     background-image: url('../images/dados.jpg');
     background-size: contain;
 }
 
-[player-id="P3"].player-piece {
+[PID="P3"].peca {
     background-color: #f0ff1a;
+    border-color: #f0ff1a;
+    background-image: url('../images/fundo-3.jpeg');
+    background-size: contain;
 }
 
-[player-id="P4"].player-piece {
+[PID="P4"].peca {
     background-color: #f00606;
+    border-color: #f00606;
+    background-image: url('../images/fundo-1.jpg');
+    background-size: contain;
 }
 
 .player-base {
@@ -82,7 +90,7 @@
     position: absolute;
 }
 
-.player-bases [player-id="P1"].player-base {
+.player-bases [PID="P1"].player-base {
     bottom: 0;
     left: 0;
     border-color: #343536;
@@ -91,7 +99,7 @@
     background-repeat: no-repeat;
 }
 
-.player-bases [player-id="P2"].player-base {
+.player-bases [PID="P2"].player-base {
     top: 0;
     background-image: url('../images/ilha-luanda.jpg');
     background-size: cover;
@@ -100,7 +108,7 @@
     border-color: #343536;
 }
 
-.player-bases [player-id="P3"].player-base {
+.player-bases [PID="P3"].player-base {
     top: 0;
     left: 0;
     border-color: #343536;
@@ -109,7 +117,7 @@
     background-repeat: no-repeat;
 }
 
-.player-bases [player-id="P4"].player-base {
+.player-bases [PID="P4"].player-base {
     bottom: 0;
     right: 0;
     border-color: #343536;

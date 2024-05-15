@@ -182,11 +182,11 @@ export class Ludo {
     onPieceClick(event) {
         const target = event.target;
 
-        if (!target.classList.contains('player-piece') || !target.classList.contains('highlight')) {
+        if (!target.classList.contains('peca') || !target.classList.contains('highlight')) {
             return;
         }
-        const player = target.getAttribute('player-id');
-        const piece = target.getAttribute('piece');
+        const player = target.getAttribute('PID');
+        const piece = target.getAttribute('peca');
 
         const currentPosition = this.currentPositions[player][piece];
 

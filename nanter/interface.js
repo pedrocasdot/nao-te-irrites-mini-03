@@ -14,10 +14,10 @@ const values = {
 };
 
 const playerPiecesElements = {
-    P1: document.querySelectorAll('[player-id="P1"].player-piece'),
-    P2: document.querySelectorAll('[player-id="P2"].player-piece'),
-    P3: document.querySelectorAll('[player-id="P3"].player-piece'),
-    P4: document.querySelectorAll('[player-id="P4"].player-piece'),
+    P1: document.querySelectorAll('[PID="P1"].peca'),
+    P2: document.querySelectorAll('[PID="P2"].peca'),
+    P3: document.querySelectorAll('[PID="P3"].peca'),
+    P4: document.querySelectorAll('[PID="P4"].peca'),
 }
 
 export class UI {
@@ -30,7 +30,7 @@ export class UI {
     }
 
     static listenPieceClick(callback) {
-        document.querySelector('.player-pieces').addEventListener('click', callback)
+        document.querySelector('.pecas').addEventListener('click', callback)
     }
 
 
@@ -69,7 +69,7 @@ export class UI {
             activePlayerBase.classList.remove('highlight');
         }
         // highlight
-        document.querySelector(`[player-id="${player}"].player-base`).classList.add('highlight')
+        document.querySelector(`[PID="${player}"].player-base`).classList.add('highlight')
     }
 
     static enableDice() {
@@ -93,7 +93,7 @@ export class UI {
     }
 
     static unhighlightPieces() {
-        document.querySelectorAll('.player-piece.highlight').forEach(ele => {
+        document.querySelectorAll('.peca.highlight').forEach(ele => {
             ele.classList.remove('highlight');
         })
     }
