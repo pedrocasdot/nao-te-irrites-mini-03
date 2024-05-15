@@ -188,7 +188,6 @@ export class Ludo {
         const player = target.getAttribute('player-id');
         const piece = target.getAttribute('piece');
 
-
         const currentPosition = this.currentPositions[player][piece];
 
         if (BASE[player].includes(currentPosition) || this.bonus) {
