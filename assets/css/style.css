@@ -30,9 +30,6 @@
     transition: all .2s;
 
     z-index: 1;
-
-    /* top: 15%;
-    left: 50%; */
 }
 
 .peca.highlight {
@@ -181,4 +178,16 @@
 .dice-value {
     font-size: 24px;
     font-weight: bold;
+}
+.swal-button-deny{
+    background-color: #ce2020 !important;    
+}
+.swal-button-red{
+    background-color: #ce2020 !important;    
+}
+
+.swal-button-deny[disabled] {
+    pointer-events: none;
+    background-color: #343536;
+    opacity: 0.5; /* Opcional: reduzir a opacidade para indicar visualmente que o botão está desativado */
 }
