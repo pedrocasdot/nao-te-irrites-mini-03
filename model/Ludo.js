@@ -1,36 +1,43 @@
+// Importações dos módulos necessários
 import { BASE, LARGO_CASA, CASA, JOGADORES, NAO_PODE_MATAR, INICIO, ESTADO_DADO, DESTINO } from '../nanter/posicoes.js';
 import { UI } from '../nanter/interface.js';
 
-const segundoDado  = document.getElementById('dice2');
+// Elemento HTML para o segundo dado
+const segundoDado = document.getElementById('dice2');
 
-
-//Declaração da classe Ludo 
+// Declaração da classe Ludo
 export class Ludo {
+    // Propriedade para armazenar as posições atuais das peças de cada jogador
     currentPositions = {
         P1: [],
         P2: [],
         P3: [],
         P4: []
-    }
+    };
+    // Array para controlar se cada jogador já jogou pela primeira vez
     primeiraVez = [false, false, false, false];
-    dados = [false, false]
+    // Array para armazenar os valores dos dados
+    dados = [false, false];
+    // Propriedade para armazenar o bônus do jogador atual
     _bonus;
+    // Getter e setter para a propriedade _bonus
     get bonus() {
         return this._bonus;
     }
     set bonus(value) {
         this._bonus = value;
     }
-    
+
+    // Getter e setter para o primeiro dado
     get diceone() {
         return this._diceone;
     }
-
     set diceone(value) {
         this._diceone = value;
         this._diceone = UI.setDiceValue1(value);
     }
 
+    // Getter e setter para o segundo dado
     _dicetwo;
     get dicetwo() {
         return this._dicetwo;
@@ -40,7 +47,7 @@ export class Ludo {
         this._dicetwo = UI.setDiceValue2(value);
     }
 
-
+    // Getter e setter para controlar de quem é a vez
     _turn;
     get turn() {
         return this._turn;
@@ -50,12 +57,14 @@ export class Ludo {
         UI.setTurn(value);
     }
 
+    // Getter e setter para o estado atual do jogo
     _state;
     get state() {
         return this._state;
     }
     set state(value) {
         this._state = value;
+        // Atualiza a interface de acordo com o estado do jogo
         if (value === ESTADO_DADO.DICE_NOT_ROLLED) {
             UI.enableDice();
             UI.unhighlightPieces();
@@ -64,56 +73,66 @@ export class Ludo {
         }
     }
 
-    //COnstrutor da classe Ludo
+    // Construtor da classe Ludo
     constructor() {
+        // Configura os listeners de cliques nos dados, reset e peças
         this.listenDiceClick();
         this.listenResetClick();
         this.listenPieceClick();
+        // Reseta o jogo para sua configuração inicial
         this.resetGame();
     }
 
+    // Método para adicionar o listener de clique nos dados
     listenDiceClick() {
-        UI.listenDiceClick(this.onDiceClick.bind(this))
+        UI.listenDiceClick(this.onDiceClick.bind(this));
     }
-    //Quando o dado é clicado
-    onDiceClick() {
-        var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
-        
-        var values = [3, 3, 1, 1, 1,3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
 
+    // Método chamado quando os dados são clicados
+    onDiceClick() {
+        // Reproduz o som do dado sendo rolado
+        var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
+
+        // Valores possíveis dos dados
+        var values = [3, 3, 1, 1, 1, 3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+
+        // Gera valores aleatórios para os dados
         let x = Math.floor(Math.random() * 15);
         let y = Math.floor(Math.random() * 15);
         this.diceone = values[x];
         this.dicetwo = values[y];
         audio.play();
 
-        if(this.primeiraVez[this.turn] === false && (this.diceone === 6 || this.dicetwo === 6)){
+        // Verifica se é a primeira jogada do jogador e se obteve um 6 em algum dado
+        if (this.primeiraVez[this.turn] === false && (this.diceone === 6 || this.dicetwo === 6)) {
             this.primeiraVez[this.turn] = true;
             const jogador = JOGADORES[this.turn];
             this.setPiecePosition(jogador, 0, INICIO[jogador]);
             this.setPiecePosition(jogador, 1, INICIO[jogador]);
             this.movePiece(jogador, 1, Math.min(this.diceone, this.dicetwo));
-           // segundoDado.hidden = true;
             return;
         }
 
+        // Atualiza o estado do jogo para indicar que os dados foram rolados
         this.state = ESTADO_DADO.DICE_ROLLED;
+        // Verifica quais peças podem ser movidas com base nos valores dos dados
         this.checkForEligiblePieces();
     }
-    //Verifcar todas as peças qu podem ser movimentadas com base os valores dos dados
+
+    // Método para verificar quais peças podem ser movidas
     checkForEligiblePieces() {
         const player = JOGADORES[this.turn];
         const eligiblePieces = this.getEligiblePieces(player);
-        if (eligiblePieces.length) {
-            console.log(player, eligiblePieces);
+        if (eligiblePieces.length && (!this.dados[0] || !this.dados[1])) {
             UI.highlightPieces(player, eligiblePieces);
         } else {
             this.incrementTurn();
         }
     }
 
-    //Quem será o próximo jogador
+    // Método para avançar para o próximo jogador
     incrementTurn() {
+        // Lógica para definir o próximo jogador
         if (this.turn == 0) {
             this.turn = 2;
         } else if (this.turn === 1) {
@@ -123,62 +142,65 @@ export class Ludo {
         } else if (this.turn == 3) {
             this.turn = 0;
         }
+        // Reseta os valores dos dados e exibe o segundo dado novamente
         this.dados[0] = this.dados[1] = false;
         segundoDado.hidden = false;
         this.state = ESTADO_DADO.DICE_NOT_ROLLED;
     }
-    
-    verificarBloqueio(player, piece){
-        //um jogador só pode passar se nas posições 0, 40, 60, 60, 20 tiver até no máximo 1 peça do jogar da respectiva casa de inicio
+
+    // Método para verificar se há algum bloqueio para o jogador atual
+    verificarBloqueio(player, piece) {
+        // Um jogador só pode passar se nas posições 0, 40, 60, 60, 20 tiver até no máximo 1 peça do jogador da respectiva casa de início
         return true;
     }
-    
-    //Retorna todas a possíveis peças que estão elegíveis para o atual jogador
+
+    // Método para retornar todas as peças elegíveis para o jogador atual
     getEligiblePieces(player) {
         return [0, 1, 2, 3].filter(piece => {
             const currentPosition = this.currentPositions[player][piece];
+
+            if (this.dados[0] && this.dados[1]) {
+                return false;
+            }
             if (currentPosition === CASA[player]) {
                 return false;
             }
             if (
-                BASE[player].includes(currentPosition)
-                && this.diceone !== 6 && (segundoDado.hidden ? true :  this.dicetwo !== 6)
+                BASE[player].includes(currentPosition) &&
+                (this.dados[0] ? true : this.diceone !== 6) &&
+                (this.dados[1] || segundoDado.hidden ? true : this.dicetwo !== 6)
             ) {
                 return false;
             }
-
-            // if(this.verificarBloqueio(player, piece)){
-            //     return false;
-            // }
-
-
-            if (
-                LARGO_CASA[player].includes(currentPosition)
-                && Math.min(this.diceone, segundoDado.hidden ? 10 :  this.dicetwo) > CASA[player] - currentPosition
-            ) {
-                return false;
+            if (!this.dados[0]) {
+                if (
+                    LARGO_CASA[player].includes(currentPosition) &&
+                    this.diceone > CASA[player] - currentPosition
+                ) return false;
+            }
+            if (!this.dados[1]) {
+                if (
+                    LARGO_CASA[player].includes(currentPosition) &&
+                    this.dicetwo > CASA[player] - currentPosition
+                ) return false;
             }
             return true;
         });
     }
 
+    // Método para retornar todas as peças elegíveis para o bônus do jogador atual
     getEligiblePiecesForBonus(player) {
         return [0, 1, 2, 3].filter(piece => {
             const currentPosition = this.currentPositions[player][piece];
             if (currentPosition === CASA[player]) {
                 return false;
             }
-
-            if (
-                BASE[player].includes(currentPosition)
-                && this.bonus !== 6
-            ) {
+            if (BASE[player].includes(currentPosition) && this.bonus !== 6) {
                 return false;
             }
-
             if (
-                LARGO_CASA[player].includes(currentPosition)
-                && this.bonus > CASA[player] - currentPosition
+                LARGO_CASA[player].includes(currentPosition) &&
+                this.bonus > CASA[player] - currentPosition
             ) {
                 return false;
             }
@@ -186,13 +208,14 @@ export class Ludo {
         });
     }
 
+    // Método para adicionar o listener de clique no botão de reset
     listenResetClick() {
-        UI.listenResetClick(this.resetGame.bind(this))
+        UI.listenResetClick(this.resetGame.bind(this));
     }
 
-
-    //Reiniciar o jogo
+    // Método para reiniciar o jogo
     resetGame() {
+        // Reseta as posições das peças para a configuração inicial
         this.currentPositions = structuredClone(BASE);
 
         JOGADORES.forEach(player => {
@@ -201,21 +224,24 @@ export class Ludo {
             })
         });
 
+        // Define aleatoriamente qual jogador começará
         this.turn = Math.floor(Math.random() * 4);
+        // Reseta o bônus e exibe o segundo dado novamente
         this.bonus = 0;
         segundoDado.hidden = false;
         this.state = ESTADO_DADO.DICE_NOT_ROLLED;
     }
 
-    //JS UI para marcar as peças do atual jogador
+    // Método para adicionar o listener de clique nas peças
     listenPieceClick() {
         UI.listenPieceClick(this.onPieceClick.bind(this));
     }
 
-    //Tratamento de todas as possíveis ocorrência ao clicar na peça 
+    // Método para tratar o clique em uma peça
     onPieceClick(event) {
         const target = event.target;
 
+        // Verifica se o alvo do clique é uma peça e se está destacada
         if (!target.classList.contains('peca') || !target.classList.contains('highlight')) {
             return;
         }
@@ -224,17 +250,20 @@ export class Ludo {
 
         const currentPosition = this.currentPositions[player][piece];
 
+        // Trata o clique com base na posição atual da peça
         if (BASE[player].includes(currentPosition) || this.bonus) {
             this.handlePieceClick(player, piece, this.bonus);
-            segundoDado.hidden = true;
+            UI.unhighlightPieces();
             this.checkForEligiblePieces();
+
             return;
         }
 
+        // Abre um modal para permitir ao jogador escolher qual dado usar
         Swal.fire({
             showDenyButton: segundoDado.hidden ? false : true,
-            confirmButtonText: `<span style='color: white; font-weight: bold;'>${this.diceone}</span>`,
-            denyButtonText: `<span style='color: white; font-weight: bold;'>${this.dicetwo}</span>`,
+            confirmButtonText: `<span style='color: white; font-weight: bold;${this.dados[0] ? `pointer-events: none;` : ""}'>${this.diceone}</span>`,
+            denyButtonText: `<span style='color: white; font-weight: bold; ${this.dados[1] ? `pointer-events: none;` : ""}'>${this.dicetwo}</span>`,
             background: `url('../assets/images/dados.jpg') no-repeat`,
             customClass: {
                 title: 'swal-text-white',
@@ -247,42 +276,46 @@ export class Ludo {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.handlePieceClick(player, piece, this.diceone);
-                this.diceone = 0;
                 this.dados[0] = true;
             } else if (result.isDenied) {
                 this.handlePieceClick(player, piece, this.dicetwo);
-                this.dicetwo = 0;
                 this.dados[1] = true;
             }
-            if(this.diceone || this.dicetwo){
+            // Verifica se ainda faltam dados para serem escolhidos
+            if (!this.dados[0] || !this.dados[1]) {
                 this.checkForEligiblePieces();
             }
         });
-        
+
     }
 
-    //Fazer tratamento ao clicar nas peças
+    // Método para tratar o clique em uma peça
     handlePieceClick(player, piece, value) {
         const currentPosition = this.currentPositions[player][piece];
 
         if (BASE[player].includes(currentPosition)) {
             this.setPiecePosition(player, piece, INICIO[player]);
+
+            if (this.diceone === 6 && !this.dados[0]) {
+                this.dados[0] = true;
+            } else if (this.dicetwo === 6 && !this.dados[1]) {
+                this.dados[1] = true;
+            }
             this.state = ESTADO_DADO.DICE_NOT_ROLLED;
-            segundoDado.hidden = true;
             return;
         }
         UI.unhighlightPieces();
         this.movePiece(player, piece, value);
 
     }
-    //Função para mudar a posição de uma peça
+
+    // Método para definir a posição de uma peça
     setPiecePosition(player, piece, newPosition) {
         this.currentPositions[player][piece] = newPosition;
         UI.setPiecePosition(player, piece, newPosition)
     }
 
-
-    //Andar uma quantidade definida de passos
+    // Método para mover uma peça
     movePiece(player, piece, moveBy) {
         const interval = setInterval(() => {
             this.incrementPiecePosition(player, piece);
@@ -290,47 +323,46 @@ export class Ludo {
             if (moveBy === 0) {
                 clearInterval(interval);
 
-                // check if player won
+                // Verifica se o jogador venceu
                 if (this.hasPlayerWon(player)) {
                     alert(`Player: ${player} has won!`);
                     this.resetGame();
                     return;
                 }
 
+                // Verifica se houve um kill
                 const isKill = this.checkForKill(player, piece);
                 if (isKill) {
                     const player = JOGADORES[this.turn];
+                    this.bonus = 20;
                     const eligiblePieces = this.getEligiblePiecesForBonus(player);
                     if (eligiblePieces.length) {
-                        this.bonus = 10
                         UI.highlightPieces(player, eligiblePieces);
-                        if (this.diceone === 6 || (this.dicetwo === 6 && !segundoDado.hidden)) {
-                            segundoDado.hidden = true;
-                            this.state = ESTADO_DADO.DICE_NOT_ROLLED;
-                        }
                         this.bonus = 0;
                         return;
                     }
                 }
                 if (this.diceone === 6 || (this.dicetwo === 6 && !segundoDado.hidden)) {
                     segundoDado.hidden = true;
+                    this.dados[1] = true;
+                    this.dados[0] = false;
                     this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                     return;
                 }
 
-                if(segundoDado.hidden === false){
-                    if(this.dados[0] === true && this.dados[1] === true){
+                if (segundoDado.hidden === false) {
+                    if (this.dados[0] === true && this.dados[1] === true) {
                         this.incrementTurn();
                     }
-                }else{
+                } else {
                     this.incrementTurn();
                 }
-             
+
             }
         }, 200);
     }
 
-    //Função para verificar se é posssível matar
+    // Método para verificar se houve um kill
     checkForKill(player, piece) {
         const currentPosition = this.currentPositions[player][piece];
 
@@ -351,25 +383,24 @@ export class Ludo {
 
         return kill
     }
-    
-    //Vericar se tem algum jogar que já terminou o jogo
+
+    // Método para verificar se o jogador venceu
     hasPlayerWon(player) {
         return [0, 1, 2, 3].every(piece => this.currentPositions[player][piece] === CASA[player])
     }
 
-
-    
+    // Método para incrementar a posição de uma peça
     incrementPiecePosition(player, piece) {
         this.setPiecePosition(player, piece, this.getIncrementedPosition(player, piece));
     }
 
+    // Método para obter a próxima posição de uma peça
     getIncrementedPosition(player, piece) {
         const currentPosition = this.currentPositions[player][piece];
 
         if (currentPosition === DESTINO[player]) {
             return LARGO_CASA[player][0];
-        }
-        else if (currentPosition === 79) {
+        } else if (currentPosition === 79) {
             return 0;
         }
         return currentPosition + 1;
