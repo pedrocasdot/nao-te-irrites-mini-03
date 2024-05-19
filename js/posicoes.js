@@ -164,7 +164,8 @@ export const COORDENADAS = {
 export const SALTO = 6.66;
 
 export const JOGADORES = ['P1', 'P2', 'P3', 'P4'];
-
+export const JOGADORES_2 = ['P1', 'P2'];
+export const JOGADORES_3 = ['P1', 'P2', 'P3'];
 
 
 export const BASE = {
@@ -174,6 +175,16 @@ export const BASE = {
     P4: [800, 801, 802, 803],
 }
 
+export const BASE_2 = {
+    P1: [500, 501, 502, 503],
+    P2: [600, 601, 602, 603],
+}
+
+export const BASE_3 = {
+    P1: [500, 501, 502, 503],
+    P2: [600, 601, 602, 603],
+    P3: [700, 701, 702, 703],
+}
 
 export const INICIO = {
     P1: 0,

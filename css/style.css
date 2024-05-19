@@ -10,7 +10,7 @@
 .nanter-container .nanter {
     height: 450px;
     width: 100%;
-    background-image: url('../images/bg-gif.gif');
+    background-image: url('../assets/images/bg-gif.gif');
     background-size: contain;
     position: relative;
 }
@@ -55,28 +55,28 @@
 [PID="P1"].peca {
     background-color: white;
     border-color: white;
-    background-image: url('../images/ilha-luanda.jpg');
+    background-image: url('../assets/images/ilha-luanda.jpg');
     background-size: contain;
 }
 
 [PID="P2"].peca {
     background-color: blue;
     border-color: blue;
-    background-image: url('../images/dados.jpg');
+    background-image: url('../assets/images/dados.jpg');
     background-size: contain;
 }
 
 [PID="P3"].peca {
     background-color: #f0ff1a;
     border-color: #f0ff1a;
-    background-image: url('../images/fundo-3.jpeg');
+    background-image: url('../assets/images/fundo-3.jpeg');
     background-size: contain;
 }
 
 [PID="P4"].peca {
     background-color: #f00606;
     border-color: #f00606;
-    background-image: url('../images/fundo-1.jpg');
+    background-image: url('../assets/images/fundo-1.jpg');
     background-size: contain;
 }
 
@@ -91,14 +91,14 @@
     bottom: 0;
     left: 0;
     border-color: #343536;
-    background-image: url('../images/ilha-luanda.jpg');
+    background-image: url('../assets/images/ilha-luanda.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
 
 .player-bases [PID="P2"].player-base {
     top: 0;
-    background-image: url('../images/ilha-luanda.jpg');
+    background-image: url('../assets/images/ilha-luanda.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     right: 0;
@@ -109,7 +109,7 @@
     top: 0;
     left: 0;
     border-color: #343536;
-    background-image: url('../images/ilha-luanda.jpg');
+    background-image: url('../assets/images/ilha-luanda.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -118,7 +118,7 @@
     bottom: 0;
     right: 0;
     border-color: #343536;
-    background-image: url('../images/ilha-luanda.jpg');
+    background-image: url('../assets/images/ilha-luanda.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -193,22 +193,21 @@
     opacity: 0.5; /* Opcional: reduzir a opacidade para indicar visualmente que o botão está desativado */
 }
 .input-options{
-    background-color: #18412a;
-    color: black;
+    color: white !important;
+    background-color: green !important;
     margin-bottom: 0px;
+    font-weight: bold;
+}
+.text{
+    background-color: green !important;
 }
 
 .input-tittle{
-    background-image: url('../images/ilha-luanda.jpg') !important;
+    background-image: url('../assets/images/ilha-luanda.jpg') !important;
     background-size: cover;
-    color: white;
+    color: #fff;
     font-size: 20px;
     margin-bottom: 0px;
     background-repeat: no-repeat;
 }
 
-.swal-button-deny[disabled] {
-    pointer-events: none;
-    background-color: #343536;
-    opacity: 0.5; /* Opcional: reduzir a opacidade para indicar visualmente que o botão está desativado */
-}

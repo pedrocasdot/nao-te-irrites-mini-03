@@ -20,7 +20,7 @@ const playerPiecesElements = {
     P4: document.querySelectorAll('[PID="P4"].peca'),
 }
 
-export class UI {
+export class Interface {
     static listenDiceClick(callback) {
         diceButtonElement.addEventListener('click', callback);
     }
@@ -40,7 +40,7 @@ export class UI {
      * @param {Number} piece 
      * @param {Number} newPosition 
      */
-    static setPiecePosition(player, piece, newPosition) {
+    static mudarPosicoesPecas(player, piece, newPosition) {
         if (!playerPiecesElements[player] || !playerPiecesElements[player][piece]) {
             console.error(`Player element of given player: ${player} and piece: ${piece} not found`)
             return;
@@ -53,7 +53,7 @@ export class UI {
         pieceElement.style.left = x * SALTO + '%';
     }
 
-    static setTurn(index) {
+    static proximoJogador(index) {
         if (index < 0 || index >= JOGADORES.length) {
             console.error('index out of bound!');
             return;
@@ -72,11 +72,11 @@ export class UI {
         document.querySelector(`[PID="${player}"].player-base`).classList.add('highlight')
     }
 
-    static enableDice() {
+    static ativarDado() {
         diceButtonElement.removeAttribute('disabled');
     }
 
-    static disableDice() {
+    static desativarDado() {
         diceButtonElement.setAttribute('disabled', '');
     }
 
@@ -85,20 +85,20 @@ export class UI {
      * @param {string} player 
      * @param {Number[]} pieces 
      */
-    static highlightPieces(player, pieces) {
+    static destacarPecas(player, pieces) {
         pieces.forEach(piece => {
             const pieceElement = playerPiecesElements[player][piece];
             pieceElement.classList.add('highlight');
         })
     }
 
-    static unhighlightPieces() {
+    static desativarDestaquePecas() {
         document.querySelectorAll('.peca.highlight').forEach(ele => {
             ele.classList.remove('highlight');
         })
     }
 
-    static setDiceValue1(valueDice1) {
+    static alterarValorDadoUm(valueDice1) {
         for (var i = 1; i <= 6; i++) {
             elDiceOne.classList.remove('show-' + i);
         }
@@ -108,7 +108,7 @@ export class UI {
     }
 
 
-    static setDiceValue2(valueDice2) {
+    static alterarValorDadoDois(valueDice2) {
         for (var i = 1; i <= 6; i++) {
             elDiceTwo.classList.remove('show-' + i);
         }
