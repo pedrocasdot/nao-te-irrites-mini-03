@@ -192,6 +192,20 @@
     content: '-';
     opacity: 0.5; /* Opcional: reduzir a opacidade para indicar visualmente que o botão está desativado */
 }
+.input-options{
+    background-color: #18412a;
+    color: black;
+    margin-bottom: 0px;
+}
+
+.input-tittle{
+    background-image: url('../images/ilha-luanda.jpg') !important;
+    background-size: cover;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 0px;
+    background-repeat: no-repeat;
+}
 
 .swal-button-deny[disabled] {
     pointer-events: none;

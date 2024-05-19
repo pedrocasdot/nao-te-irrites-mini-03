@@ -4,7 +4,7 @@ import { UI } from '../nanter/interface.js';
 
 // Elemento HTML para o segundo dado
 const segundoDado = document.getElementById('dice2');
-
+let quantidadeJogadores;
 // Declaração da classe Ludo
 export class Ludo {
     // Propriedade para armazenar as posições atuais das peças de cada jogador
@@ -14,6 +14,9 @@ export class Ludo {
         P3: [],
         P4: []
     };
+    
+
+    
     // Array para controlar se cada jogador já jogou pela primeira vez
     primeiraVez = [false, false, false, false];
     // Array para armazenar os valores dos dados
@@ -66,22 +69,55 @@ export class Ludo {
         this._state = value;
         // Atualiza a interface de acordo com o estado do jogo
         if (value === ESTADO_DADO.DICE_NOT_ROLLED) {
-            UI.enableDice();
-            UI.unhighlightPieces();
+                UI.enableDice();
+                UI.unhighlightPieces();
         } else {
             UI.disableDice();
         }
     }
 
-    // Construtor da classe Ludo
-    constructor() {
-        // Configura os listeners de cliques nos dados, reset e peças
-        this.listenDiceClick();
-        this.listenResetClick();
-        this.listenPieceClick();
-        // Reseta o jogo para sua configuração inicial
-        this.resetGame();
+    iniciar = async () => {
+        const { value: jogadores } = await Swal.fire({
+            title: `<div style = 'font-size: 15px;'><i>"Não te irrites, o estilo de vida dos angolanos"</i></div><p> <br>Escolha a quantidade de jogadores</p>`,
+            input: "radio",
+            inputOptions: {
+                2: 2,
+                3: 3,
+                4: 4,
+            },
+            showCancelButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            customClass: {
+                inputOptions: 'input-options',
+                input: 'input-options',
+                title: 'input-tittle',
+                okayButton: 'input-options'
+            },
+            inputValidator: (value) => {
+              return new Promise((resolve) => {
+                if(!value)resolve("Selecione uma opção, por favor!");
+                else resolve();
+              });
             }
+           });
+          if (jogadores) {
+            quantidadeJogadores = jogadores;
+            this.listenDiceClick();
+            this.listenResetClick();
+            this.listenPieceClick();
+            // Reseta o jogo para sua configuração inicial
+            this.resetGame();
+          }
+        
+    };
+
+    // Construtor da classe Ludo
+     constructor()  {
+        // Configura os listeners de cliques nos dados, reset e peças
+        /* inputOptions can be an object or Promise */
+        this.iniciar();    
+    }
 
     // Método para adicionar o listener de clique nos dados
     listenDiceClick() {
@@ -160,8 +196,19 @@ export class Ludo {
 
     // Método para verificar se há algum bloqueio para o jogador atual
     verificarBloqueio(player, piece) {
-        // Um jogador só pode passar se nas posições 0, 40, 60, 60, 20 tiver até no máximo 1 peça do jogador da respectiva casa de início
-        return true;
+        let menorValorDices = this.diceone;
+        if(!this.dados[1] && segundoDado.hidden === false){
+            menorValorDices = Math.min(this.dicetwo, menorValorDices);
+        }
+        alert(menorValorDices);
+        let step = this.currentPositions[player][piece];
+        while(menorValorDices){
+            step+=1;
+            let p =  this.getPlayersAndPiecesAtPosition(step);
+            if(p.length === 2 && p[0].player === p[1].player && INICIO[player].includes(step))return true;
+            menorValorDices--;
+        }        
+        return false;
     }
 
     // Método para retornar todas as peças elegíveis para o jogador atual
@@ -224,7 +271,7 @@ export class Ludo {
     resetGame() {
         // Reseta as posições das peças para a configuração inicial
         this.currentPositions = structuredClone(BASE);
-
+        
         JOGADORES.forEach(player => {
             [0, 1, 2, 3].forEach(piece => {
                 this.setPiecePosition(player, piece, this.currentPositions[player][piece])
@@ -269,6 +316,12 @@ export class Ludo {
                 UI.enableDice();
                 this.dados[0] = false;
             }
+            let jogadorAserApertada = this.verificarAperto(player, INICIO[player]);
+            if(jogadorAserApertada !== undefined){
+                this.setPiecePosition(jogadorAserApertada.player, jogadorAserApertada.piece,
+                    BASE[jogadorAserApertada.player][jogadorAserApertada.piece]
+                );
+            }
             return;
         }
 
@@ -296,7 +349,6 @@ export class Ludo {
                 this.handlePieceClick(player, piece, this.dicetwo);
                 this.dados[1] = true;
             }
-            
             // Verifica se ainda faltam dados para serem escolhidos
             
             if ((!this.dados[0] || !this.dados[1])) {
@@ -325,7 +377,7 @@ export class Ludo {
         this.bonus = 0;
 
     }
-
+    
     // Método para definir a posição de uma peça
     setPiecePosition(player, piece, newPosition) {
         this.currentPositions[player][piece] = newPosition;
@@ -339,13 +391,24 @@ export class Ludo {
             moveBy--;
             if (moveBy === 0) {
                 clearInterval(interval);
-
-                // Verifica se o jogador venceu
                 if (this.hasPlayerWon(player)) {
                     alert(`Player: ${player} has won!`);
                     this.resetGame();
                     return;
                 }
+                
+                // if(CASA[player].includes(this.currentPositions[player][piece])){
+                //     this.bonus = 10;
+                //     const eligiblePieces = this.getEligiblePiecesForBonus(player);
+                //     if (eligiblePieces.length) {
+                //         UI.highlightPieces(player, eligiblePieces);
+                //         return;
+                //     }
+                // }
+
+
+                // Verifica se o jogador venceu
+                
                 // Verifica se houve um kill
                 const isKill = this.checkForKill(player, piece);
                 if (isKill) {
@@ -357,12 +420,18 @@ export class Ludo {
                         return;
                     }
                 }
+                
+                
+                
                 //deve girar novamente, caso o sair o valor 6 em dos dados
+                if(this.diceone === this.dicetwo && !segundoDado.hidden && !this.dados[1]){
+                    this.state = ESTADO_DADO.DICE_NOT_ROLLED;
+                    return;
+                }
                 if (this.diceone === 6 || (this.dicetwo === 6 && !segundoDado.hidden)) {
                     segundoDado.hidden = true;
                     this.dados[1] = true;
                     this.dados[0] = false;
-
                     this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                     return;
                 }
@@ -410,6 +479,27 @@ export class Ludo {
         });
         return count;
     }
+    getPlayersAndPiecesAtPosition(position) {
+        let playersAndPieces = [];
+        JOGADORES.forEach(player => {
+            [0, 1, 2, 3].forEach(piece => {
+                if (this.currentPositions[player][piece] === position) {
+                    playersAndPieces.push({ player: player, piece: piece });
+                }
+            });
+        });
+        return playersAndPieces;
+    }
+    verificarAperto(player, position){
+        let playersAndPieces = this.getPlayersAndPiecesAtPosition(position);
+        for(let i = 0; i < playersAndPieces.length; i++){
+            if(playersAndPieces[i].player !== player){
+                return playersAndPieces[i];
+            }
+        }
+    }
+
+    
 
     countPiecesAtPositionAllPlayer(position) {
         let count = 0;
@@ -434,7 +524,6 @@ export class Ludo {
     // Método para obter a próxima posição de uma peça
     getIncrementedPosition(player, piece) {
         const currentPosition = this.currentPositions[player][piece];
-
         if (currentPosition === DESTINO[player]) {
             return LARGO_CASA[player][0];
         } else if (currentPosition === 79) {
