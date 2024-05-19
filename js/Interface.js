@@ -33,7 +33,6 @@ export class Interface {
         document.querySelector('.pecas').addEventListener('click', callback)
     }
 
-
     /**
      * 
      * @param {string} player 

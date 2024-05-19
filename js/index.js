@@ -1,3 +1,9 @@
 
+
+
 import { Nanter } from './Nanter.js';
-const nanter = new Nanter();
+const resetBtn  = document.getElementById('reset-btn');
+let nanter = new Nanter();
+
+
+

@@ -86,7 +86,7 @@
             this._state = value;
             // Atualiza a interface de acordo com o estado do jogo
             if (value === ESTADO_DADO.DICE_NOT_ROLLED) {
-                if(this.dados[0] === false || this.dados[1] === false){
+                if(this.dados[0] === false || (this.dados[1] === false)){
                     Interface.ativarDado();
                     return;
                 }
@@ -99,7 +99,7 @@
 
         iniciar = async () => {
             const { value: jogadores } = await Swal.fire({
-                title: `<div style = 'font-size: 15px;'><i>"Não te irrites, mais do que um jogo, um estilo de vida"</i></div><p> <br>Escolha a quantidade de jogadores</p>`,
+                title: `<div style = 'font-size: 15px;'><i>"Não te irrites, mais do que um jogo, é um estilo de vida."</i></div><p> <br>Escolha a quantidade de jogadores</p>`,
                 input: "radio",
                 inputOptions: {
                     2: 2,
@@ -198,6 +198,7 @@
             }
             
             if (eligiblePieces.length) {
+                console.log(eligiblePieces.length)
                 Interface.destacarPecas(player, eligiblePieces);
             } else {
                 this.incrementTurn();
@@ -259,31 +260,20 @@
 
         // Método para retornar todas as peças elegíveis para o jogador atual
         getEligiblePieces(player) {
+            console.log(this.dados);
             return [0, 1, 2, 3].filter(piece => {
                 const currentPosition = this.currentPositions[player][piece];
 
                 if (currentPosition === CASA[player]) {
                     return false;
                 }
-                if (
-                    BASE[player].includes(currentPosition) &&
-                    (this.dados[0] ? true : this.diceone !== 6) &&
-                    (this.dados[1] || segundoDado.hidden ? true : this.dicetwo !== 6)
-                ) {
+                if (BASE[player].includes(currentPosition) && (this.dados[0] === true ? true : this.diceone !== 6) &&
+                 (this.dados[1] === true || segundoDado.hidden === true ? true : this.dicetwo !== 6)) {
                     return false;
                 }
-                if (!this.dados[0]) {
-                    if (
-                        LARGO_CASA[player].includes(currentPosition) &&
-                        this.diceone > CASA[player] - currentPosition
-                    ) return false;
-                }
-                if (!this.dados[1]) {
-                    if (
-                        LARGO_CASA[player].includes(currentPosition) &&
-                        this.dicetwo > CASA[player] - currentPosition
-                    ) return false;
-                }
+                console.log(Math.min(this.dados[0] === true ? 1000:this.diceone, this.dados[1] === true ? 1000:this.dicetwo).toString().concat(" ").concat(CASA[player] - currentPosition));
+                if (LARGO_CASA[player].includes(currentPosition) && 
+                    Math.min(this.dados[0] === true ? 1000:this.diceone, this.dados[1] === true ? 1000:this.dicetwo) > CASA[player] - currentPosition) return false;
                 return true;
             });
         }
@@ -295,7 +285,7 @@
                 if (currentPosition === CASA[player]) {
                     return false;
                 }
-                if (BASE[player].includes(currentPosition) && this.bonus !== 6) {
+                if (BASE[player].includes(currentPosition)) {
                     return false;
                 }
                 if (
@@ -309,8 +299,8 @@
         }
 
         // Método para adicionar o listener de clique no botão de reset
-        listenResetClick() {
-            Interface.listenResetClick(this.resetGame.bind(this));
+         listenResetClick() {
+             Interface.listenResetClick(this.resetGame.bind(this));
         }
 
         
@@ -349,7 +339,8 @@
                     });
                 }
             });
-            
+            this.dados[0] = this.dados[1] = false;
+            this.primeiraVez = [false, false, false, false];
             // Define aleatoriamente qual jogador começará
             this.turn = 0;
             // Reseta o bônus e exibe o segundo dado novamente
@@ -397,6 +388,8 @@
                 return;
             }
 
+            let for1 = LARGO_CASA[player].includes(currentPosition) && (this.diceone > CASA[player] - currentPosition); 
+            let for2 = LARGO_CASA[player].includes(currentPosition) && (this.dicetwo > CASA[player] - currentPosition); 
             // Abre um modal para permitir ao jogador escolher qual dado usar
             Swal.fire({
                 showDenyButton: segundoDado.hidden ? false : true,
@@ -407,9 +400,9 @@
                     title: 'swal-text-white',
                     content: 'swal-text-white',
                     actions: 'swal-text-white',
-                    confirmButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.diceone) > 1 || this.dados[0]
+                    confirmButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.diceone) > 1 || this.dados[0] || for1
                     ?  'swal-button-unable': 'swal-button-red',
-                    denyButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.dicetwo) > 1  || this.dados[1]
+                    denyButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.dicetwo) > 1  || this.dados[1] || for2
                     ?  'swal-button-unable':'swal-button-deny',
                 },
                 width: 'auto',
@@ -422,7 +415,7 @@
                     this.dados[1] = true;
                 }
                 // Verifica se ainda faltam dados para serem escolhidos
-                
+
                 if ((!this.dados[0] || !this.dados[1])) {
                     this.checkForEligiblePieces();
                 }
@@ -468,6 +461,7 @@
                         this.resetGame();
                         return;
                     }
+                    //this.checkForEligiblePieces();
                     
                     // if(CASA[player].includes(this.currentPositions[player][piece])){
                     //     this.bonus = 10;
