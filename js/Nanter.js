@@ -158,7 +158,7 @@
             var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
 
             // Valores possíveis dos dados
-            var values = [3, 3, 1, 1, 1, 3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+           var values = [3, 3, 1, 1, 1, 3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
 
             // Gera valores aleatórios para os dados
             let x = Math.floor(Math.random() * 15);
@@ -198,7 +198,6 @@
             }
             
             if (eligiblePieces.length) {
-                console.log(eligiblePieces.length)
                 Interface.destacarPecas(player, eligiblePieces);
             } else {
                 this.incrementTurn();
@@ -243,14 +242,11 @@
 
         // Método para verificar se há algum bloqueio para o jogador atual
         verificarBloqueio(player, piece) {
-            let menorValorDices = this.diceone;
-            if(!this.dados[1] && segundoDado.hidden === false){
-                menorValorDices = Math.min(this.dicetwo, menorValorDices);
-            }
+            let menorValorDices = Math.min(this.dados[0] ? 10000 : this.diceone, this.dados[1] ? 10000 : this.dicetwo) ;
             let step = this.currentPositions[player][piece];
+            console.log(menorValorDices);
             while(menorValorDices){
-                step+=1;
-                let p =  this.getPlayersAndPiecesAtPosition(step);
+                let p =  this.getPlayersAndPiecesAtPosition(this.getIncrementedPosition(player, piece));
                 if(p.length === 2 && p[0].player === p[1].player && INICIO[player].includes(step))return true;
                 menorValorDices--;
             }        
@@ -259,9 +255,20 @@
 
         // Método para retornar todas as peças elegíveis para o jogador atual
         getEligiblePieces(player) {
-            console.log(this.dados);
             return [0, 1, 2, 3].filter(piece => {
                 const currentPosition = this.currentPositions[player][piece];
+                let forwardA = currentPosition + ( this.dados[0] ? 0 : this.diceone);
+                let forwardB = currentPosition + ( this.dados[1] ? 0 : this.dicetwo);
+
+                if(this.verificarBloqueio(player, piece))return false;
+
+                if(this.countPiecesAtPositionAllPlayer(currentPosition + ( this.dados[0] ? 0 : this.diceone) === 
+            currentPosition ? -1 : forwardA) > 1
+             && 
+            this.countPiecesAtPositionAllPlayer(currentPosition + ( this.dados[1] ? 0 : this.diceone) === 
+            currentPosition ? -1 : forwardB) > 1){
+                    return false;
+                }
 
                 if (currentPosition === CASA[player]) {
                     return false;
@@ -370,7 +377,6 @@
             if (BASE[player].includes(currentPosition) || this.bonus) {
                 this.handlePieceClick(player, piece, this.bonus);
                 Interface.desativarDestaquePecas();
-                console.log(this.dados[0]);
                 this.checkForEligiblePieces();
 
                 if(this.dados[0] === true && segundoDado.hidden === true){
@@ -451,11 +457,14 @@
 
         // Método para mover uma peça
         movePiece(player, piece, moveBy) {
+            const pecaAndando = new Audio('../assets/audio/peca_andando.mp3');
+            pecaAndando.play();
             const interval = setInterval(() => {
                 this.incrementPiecePosition(player, piece);
                 moveBy--;
                 if (moveBy === 0) {
                     clearInterval(interval);
+                    pecaAndando.pause();
                     if (this.hasPlayerWon(player)) {
                         alert(`Player: ${player} has won!`);
                         this.resetGame();
