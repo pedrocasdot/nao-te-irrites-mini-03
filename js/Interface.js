@@ -106,8 +106,6 @@ export class Interface {
         elDiceOne.classList.add('show-' + valueDice1);
         return values[valueDice1];
     }
-
-
     static alterarValorDadoDois(valueDice2) {
         for (var i = 1; i <= 6; i++) {
             elDiceTwo.classList.remove('show-' + i);

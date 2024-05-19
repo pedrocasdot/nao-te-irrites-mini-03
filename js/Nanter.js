@@ -4,8 +4,27 @@
 
     // Elemento HTML para o segundo dado
     const segundoDado = document.getElementById('dice2');
+    let lastValue;
     let quantidadeJogadores;
     // Declaração da classe Ludo
+
+    const values = {
+        1: 1,
+        2: 5,
+        3: 6,
+        4: 3,
+        5: 4,
+        6: 2
+    };
+    const values1 = {
+        1: 1,
+        5: 2,
+        6: 3,
+        3: 4,
+        4: 5,
+        2: 6
+    };
+    
     export class Nanter {
         // Propriedade para armazenar as posições atuais das peças de cada jogador
         currentPositions = {
@@ -30,6 +49,7 @@
         }
 
         // Getter e setter para o primeiro dado
+        _diceone;
         get diceone() {
             return this._diceone;
         }
@@ -57,7 +77,6 @@
             this._turn = value;
             Interface.proximoJogador(value);
         }
-
         // Getter e setter para o estado atual do jogo
         _state;
         get state() {
@@ -67,8 +86,12 @@
             this._state = value;
             // Atualiza a interface de acordo com o estado do jogo
             if (value === ESTADO_DADO.DICE_NOT_ROLLED) {
+                if(this.dados[0] === false || this.dados[1] === false){
                     Interface.ativarDado();
-                    Interface.desativarDestaquePecas();
+                    return;
+                }
+                Interface.ativarDado();
+                Interface.desativarDestaquePecas();
             } else {
                 Interface.desativarDado();
             }
@@ -142,6 +165,7 @@
             let y = Math.floor(Math.random() * 15);
             this.diceone = values[x];
             this.dicetwo = values[y];
+            lastValue = 0;
             audio.play();
             
             // Verifica se é a primeira jogada do jogador e se obteve um 6 em algum dado
@@ -210,9 +234,10 @@
                 default:
             }
             // Reseta os valores dos dados e exibe o segundo dado novamente
-            this.dados[0] = this.dados[1] = false;
             segundoDado.hidden = false;
+            lastValue = 0;
             this.state = ESTADO_DADO.DICE_NOT_ROLLED;
+            this.dados[0] = this.dados[1] = false;
         }
 
         // Método para verificar se há algum bloqueio para o jogador atual
@@ -468,18 +493,19 @@
                         }
                     }
                     
-                    
-                    
                     //deve girar novamente, caso o sair o valor 6 em dos dados
                 
-                    if (this.diceone === 6 || (this.dicetwo === 6 && !segundoDado.hidden)) {
+                    if (this.diceone === 6 || lastValue === 6  || (this.dicetwo === 6 && !segundoDado.hidden)) {
+                        this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                         segundoDado.hidden = true;
+                        if(this.dados[0] === true){
+                            lastValue = this.diceone;
+                            this.diceone =  values1[this.dicetwo];
+                        }
                         this.dados[1] = true;
                         this.dados[0] = false;
-                        this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                         return;
                     }
-
                     if (segundoDado.hidden === false) {
                         if (this.dados[0] === true && this.dados[1] === true) {
                             this.incrementTurn();
@@ -502,7 +528,6 @@
                 if (opponent !== player) {
                     [0, 1, 2, 3].forEach(piece => {
                         const opponentPosition = this.currentPositions[opponent][piece];
-
                         if (currentPosition === opponentPosition && !NAO_PODE_MATAR.includes(currentPosition)) {
                             this.setPiecePosition(opponent, piece, BASE[opponent][piece]);
                             kill = true
@@ -570,7 +595,6 @@
         getIncrementedPosition(player, piece) {
             const currentPosition = this.currentPositions[player][piece];
             if (currentPosition === DESTINO[player]) {
-                
                 return LARGO_CASA[player][0];
             } else if (currentPosition === 79) {
                 return 0;
