@@ -570,6 +570,7 @@
         getIncrementedPosition(player, piece) {
             const currentPosition = this.currentPositions[player][piece];
             if (currentPosition === DESTINO[player]) {
+                
                 return LARGO_CASA[player][0];
             } else if (currentPosition === 79) {
                 return 0;
