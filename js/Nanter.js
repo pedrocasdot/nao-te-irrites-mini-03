@@ -247,7 +247,6 @@
             if(!this.dados[1] && segundoDado.hidden === false){
                 menorValorDices = Math.min(this.dicetwo, menorValorDices);
             }
-            alert(menorValorDices);
             let step = this.currentPositions[player][piece];
             while(menorValorDices){
                 step+=1;
@@ -404,6 +403,7 @@
                     ?  'swal-button-unable': 'swal-button-red',
                     denyButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.dicetwo) > 1  || this.dados[1] || for2
                     ?  'swal-button-unable':'swal-button-deny',
+                    popup: 'swal-custom-class',
                 },
                 width: 'auto',
             }).then((result) => {
@@ -463,15 +463,14 @@
                     }
                     //this.checkForEligiblePieces();
                     
-                    // if(CASA[player].includes(this.currentPositions[player][piece])){
+                    // if(CASA[player] === this.currentPositions[player][piece]){
                     //     this.bonus = 10;
                     //     const eligiblePieces = this.getEligiblePiecesForBonus(player);
                     //     if (eligiblePieces.length) {
-                    //         UI.highlightPieces(player, eligiblePieces);
+                    //         Interface.destacarPecas(player, eligiblePieces);
                     //         return;
                     //     }
                     // }
-
 
                     // Verifica se o jogador venceu
                     
@@ -486,9 +485,7 @@
                             return;
                         }
                     }
-                    
                     //deve girar novamente, caso o sair o valor 6 em dos dados
-                
                     if (this.diceone === 6 || lastValue === 6  || (this.dicetwo === 6 && !segundoDado.hidden)) {
                         this.state = ESTADO_DADO.DICE_NOT_ROLLED;
                         segundoDado.hidden = true;
@@ -525,6 +522,8 @@
                         if (currentPosition === opponentPosition && !NAO_PODE_MATAR.includes(currentPosition)) {
                             this.setPiecePosition(opponent, piece, BASE[opponent][piece]);
                             kill = true
+                            var audio = new Audio('../assets/audio/peca_morta.mp3');
+                            audio.play();
                         }
                     });
                 }
@@ -553,6 +552,7 @@
             });
             return playersAndPieces;
         }
+
         verificarAperto(player, position){
             let playersAndPieces = this.getPlayersAndPiecesAtPosition(position);
             for(let i = 0; i < playersAndPieces.length; i++){
@@ -561,8 +561,6 @@
                 }
             }
         }
-
-        
 
         countPiecesAtPositionAllPlayer(position) {
             let count = 0;
@@ -574,7 +572,6 @@
             });
             return count;
         }
-
         // Método para verificar se o jogador venceu
         hasPlayerWon(player) {
             return [0, 1, 2, 3].every(piece => this.currentPositions[player][piece] === CASA[player])

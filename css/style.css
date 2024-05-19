@@ -24,7 +24,7 @@
     width: 3%;
     height: 3%;
     border: 1.5px solid;
-    border-radius: 20px;
+    border-radius: 2px;
     position: absolute;
     transform: translate(50%, 50%);
     transition: all .2s;
@@ -34,7 +34,7 @@
 
 .peca.highlight {
     cursor: pointer;
-    border: 2px dashed;
+    border: 2px double;
     animation: spin 2s infinite linear;
 }
 
@@ -202,6 +202,10 @@
     background-color: green !important;
 }
 
+.swal-custom-class{
+    border-radius: 20px !important;
+    background-image: url('../assets/images/bg-gif.gif') !important;
+}
 .input-tittle{
     background-image: url('../assets/images/ilha-luanda.jpg') !important;
     background-size: cover;
@@ -210,4 +214,3 @@
     margin-bottom: 0px;
     background-repeat: no-repeat;
 }
-

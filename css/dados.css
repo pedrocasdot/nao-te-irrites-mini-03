@@ -13,9 +13,7 @@ body {
 .dice {
     position: relative;
     width: 20px;
-    /* 100px / 5 */
     height: 20px;
-    /* 100px / 5 */
     transform-style: preserve-3d;
     transition: transform 0.5s;
 }
@@ -24,44 +22,32 @@ body {
 .dot {
     position: absolute;
     width: 4px;
-    /* 20px / 5 */
     height: 4px;
-    /* 20px / 5 */
     margin: -2px 1px 1px -2px;
-    /* metade da largura e altura */
     border-radius: 4px;
-    /* 20px / 5 */
     background-color: #f25f5c;
     box-shadow: inset 0.4px 0.4px #d90429;
-    /* 2px / 5 */
 }
 
 .dice-one {
     position: absolute;
     left: 30px;
-    /* 150px / 5 */
 }
 
 .dice-two {
     position: absolute;
     left: -10px;
-    /* -50px / 5 */
 }
 
 .side {
     position: absolute;
     background-color: #ffF;
     border-radius: 1px;
-    /* 5px / 5 */
     width: 20px;
-    /* 100px / 5 */
     height: 20px;
-    /* 100px / 5 */
     border: 0.2px solid #e5e5e5;
-    /* 1px / 5 */
     text-align: center;
     line-height: 0.4em;
-    /* 2em / 5 */
 }
 
 .side:nth-child(1) {
