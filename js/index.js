@@ -7,3 +7,6 @@ let nanter = new Nanter();
 
 
 
+resetBtn.addEventListener('click', ()=>{
+    location.reload();
+});

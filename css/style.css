@@ -90,42 +90,78 @@
 .player-bases [PID="P1"].player-base {
     bottom: 0;
     left: 0;
-    border-color: #343536;
-    background-image: url('../assets/images/ilha-luanda.jpg');
+    border-color:rgb(34,124,151);
+    background-image: url('../assets/images/fundo-4.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
 
 .player-bases [PID="P2"].player-base {
     top: 0;
-    background-image: url('../assets/images/ilha-luanda.jpg');
+    background-image: url('../assets/images/fundo-4.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     right: 0;
-    border-color: #343536;
+    border-color: rgb(34,124,151);
 }
 
 .player-bases [PID="P3"].player-base {
     top: 0;
     left: 0;
-    border-color: #343536;
-    background-image: url('../assets/images/ilha-luanda.jpg');
+    border-color: rgb(34,124,151);
+    background-image: url('../assets/images/fundo-4.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
+.player-bases [PID="P3"].player-base::after {
+    content: ""; 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(22, 16, 16, 0.8); 
+}
 
+.player-bases [PID="P1"].player-base::after {
+    content: ""; 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 16, 16, 0.8); 
+}
+
+.player-bases [PID="P2"].player-base::after {
+    content: ""; 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 16, 16, 0.8); 
+}
+.player-bases [PID="P4"].player-base::after {
+    content: ""; 
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(22, 16, 16, 0.8); 
+}
 .player-bases [PID="P4"].player-base {
     bottom: 0;
     right: 0;
-    border-color: #343536;
-    background-image: url('../assets/images/ilha-luanda.jpg');
+    border-color: rgb(34,124,151);
+    background-image: url('../assets/images/fundo-4.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 }
 
 .player-base.highlight {
     animation: border-blink .5s infinite alternate-reverse;
-
 }
 
 @keyframes border-blink {
@@ -203,7 +239,7 @@
 }
 
 .swal-custom-class{
-    border-radius: 20px !important;
+    border-radius: 7px !important;
     background-image: url('../assets/images/bg-gif.gif') !important;
 }
 .input-tittle{

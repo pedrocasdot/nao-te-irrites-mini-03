@@ -25,6 +25,7 @@
         2: 6
     };
     
+    var dadosIguais;
     export class Nanter {
         // Propriedade para armazenar as posições atuais das peças de cada jogador
         currentPositions = {
@@ -36,6 +37,7 @@
         
         // Array para controlar se cada jogador já jogou pela primeira vez
         primeiraVez = [false, false, false, false];
+        
         // Array para armazenar os valores dos dados
         dados = [false, false];
         // Propriedade para armazenar o bônus do jogador atual
@@ -144,9 +146,9 @@
             Interface.listenDiceClick(this.onDiceClick.bind(this));
         }
 
-        listenResetClick(){
-            Interface.listenResetClick(this.onResetClick.bind(this));
-        }
+        // listenResetClick(){
+        //     Interface.listenResetClick(this.onResetClick.bind(this));
+        // }
 
         onResetClick(){
             this.iniciar();
@@ -158,16 +160,21 @@
             var audio = new Audio('../assets/audio/dado_rolando-2.mp3');
 
             // Valores possíveis dos dados
-           var values = [3, 3, 1, 1, 1, 3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+           var values_ = [3, 3, 1, 1, 1, 3, 2, 3, 3, 4, 4, 5, 5, 6, 6];
 
             // Gera valores aleatórios para os dados
             let x = Math.floor(Math.random() * 15);
             let y = Math.floor(Math.random() * 15);
-            this.diceone = values[x];
-            this.dicetwo = values[y];
+            this.diceone = values_[x];
+            this.dicetwo = values_[y];
             lastValue = 0;
             audio.play();
             
+            if(this.diceone === this.dicetwo){
+                dadosIguais = true;
+            }else{
+                dadosIguais = false;
+            }
             // Verifica se é a primeira jogada do jogador e se obteve um 6 em algum dado
             if (this.primeiraVez[this.turn] === false && (this.diceone === 6 || this.dicetwo === 6)) {
                 this.primeiraVez[this.turn] = true;
@@ -178,7 +185,7 @@
                 return;
             }
             // Atualiza o estado do jogo para indicar que os dados foram rolados
-            this.state = ESTADO_DADO.DICE_ROLLED;
+                this.state = ESTADO_DADO.DICE_ROLLED;
             // Verifica quais peças podem ser movidas com base nos valores dos dados
             this.checkForEligiblePieces();
         }
@@ -206,6 +213,14 @@
 
         // Método para avançar para o próximo jogador
         incrementTurn() {
+
+            if(dadosIguais){
+                this.dados[0] = this.dados[1] = false;
+                segundoDado.hidden = false;
+                this.state = ESTADO_DADO.DICE_NOT_ROLLED;
+                return;
+            }
+                
             // Lógica para definir o próximo jogador
             let players = Object.keys(this.currentPositions).length;
             switch(players){
@@ -236,6 +251,7 @@
             // Reseta os valores dos dados e exibe o segundo dado novamente
             segundoDado.hidden = false;
             lastValue = 0;
+            dadosIguais = false;
             this.state = ESTADO_DADO.DICE_NOT_ROLLED;
             this.dados[0] = this.dados[1] = false;
         }
@@ -243,12 +259,37 @@
         // Método para verificar se há algum bloqueio para o jogador atual
         verificarBloqueio(player, piece) {
             let menorValorDices = Math.min(this.dados[0] ? 10000 : this.diceone, this.dados[1] ? 10000 : this.dicetwo) ;
-            let step = this.currentPositions[player][piece];
+            console.log('-------------------');
             console.log(menorValorDices);
+            let position = this.currentPositions[player][piece];
             while(menorValorDices){
-                let p =  this.getPlayersAndPiecesAtPosition(this.getIncrementedPosition(player, piece));
-                if(p.length === 2 && p[0].player === p[1].player && INICIO[player].includes(step))return true;
+                if (position === DESTINO[player]) {
+                    position =  LARGO_CASA[player][0];
+                } else if (position === 79) {
+                    position = 0;
+                }
+                let p =  this.getPlayersAndPiecesAtPosition(position);
+                if(p.length === 2 && p[0].player != player && p[0].player === p[1].player && INICIO[p[0].player] === position){
+                    return true;
+                }
                 menorValorDices--;
+            }        
+            return false;
+        }
+        verificarBloqueioBonus(player, piece, bonus) {
+            let vl = bonus ;
+            let position = this.currentPositions[player][piece];
+            while(vl){
+                if (position === DESTINO[player]) {
+                    position =  LARGO_CASA[player][0];
+                } else if (position === 79) {
+                    position = 0;
+                }
+                let p =  this.getPlayersAndPiecesAtPosition(position);
+                if(p.length === 2 && p[0].player != player && p[0].player === p[1].player && INICIO[p[0].player] === position){
+                    return true;
+                }
+                vl--;
             }        
             return false;
         }
@@ -277,7 +318,6 @@
                  (this.dados[1] === true || segundoDado.hidden === true ? true : this.dicetwo !== 6)) {
                     return false;
                 }
-                console.log(Math.min(this.dados[0] === true ? 1000:this.diceone, this.dados[1] === true ? 1000:this.dicetwo).toString().concat(" ").concat(CASA[player] - currentPosition));
                 if (LARGO_CASA[player].includes(currentPosition) && 
                     Math.min(this.dados[0] === true ? 1000:this.diceone, this.dados[1] === true ? 1000:this.dicetwo) > CASA[player] - currentPosition) return false;
                 return true;
@@ -292,6 +332,9 @@
                     return false;
                 }
                 if (BASE[player].includes(currentPosition)) {
+                    return false;
+                }
+                if(this.verificarBloqueioBonus(player, piece, this.bonus)){
                     return false;
                 }
                 if (
@@ -405,9 +448,11 @@
                     title: 'swal-text-white',
                     content: 'swal-text-white',
                     actions: 'swal-text-white',
-                    confirmButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.diceone) > 1 || this.dados[0] || for1
+                    confirmButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.diceone) > 1 || this.dados[0] || 
+                    for1 || this.verificarBloqueio(player, piece)
                     ?  'swal-button-unable': 'swal-button-red',
                     denyButton: this.countPiecesAtPositionAllPlayer(currentPosition + this.dicetwo) > 1  || this.dados[1] || for2
+                || this.verificarBloqueio(player, piece)
                     ?  'swal-button-unable':'swal-button-deny',
                     popup: 'swal-custom-class',
                 },
